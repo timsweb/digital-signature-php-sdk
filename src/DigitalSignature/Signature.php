@@ -6,8 +6,10 @@ use Mapper\ModelMapper;
 
 class Signature {
 
-    private SignatureConfig $signatureConfig;
-    private SignatureService $signatureService;
+    /** @var SignatureConfig */
+    private $signatureConfig;
+    /** @var SignatureService  */
+    private $signatureService;
 
     public static function fromFile(string $configPath) : self
     {
@@ -63,13 +65,13 @@ class Signature {
     /**
      * Load config value into SignatureConfig Object
      *
-     * @param string $configPath config path
+     * @param object $config config path
      */
     private function loadSignatureConfig($config)
     {
         $mapper = new ModelMapper();
         $this->signatureConfig = new SignatureConfig();
-        $mapper->map($jsonDecodedObj, $this->signatureConfig);
+        $mapper->map($config, $this->signatureConfig);
 
         if (is_null($this->signatureConfig->privateKeyStr) && !is_null($this->signatureConfig->privateKey)) {
             $this->signatureConfig->privateKeyStr = file_get_contents($this->signatureConfig->privateKey);
