@@ -9,10 +9,25 @@ class Signature {
     private SignatureConfig $signatureConfig;
     private SignatureService $signatureService;
 
-    public function __construct(string $configPath) {
-        $this->loadSignatureConfig($configPath);
+    public static function fromFile(string $configPath) : self
+    {
+        $instance = new self();
+        $instance->loadSignatureConfigFromFile($configPath);
+        return $instance;
+    }
+
+    public static function fromConfig(array $config) : self
+    {
+        $instance = new self();
+        $instance->loadSignatureConfig((object)$config);
+        return $instance;
+    }
+
+    public function __construct()
+    {
         $this->signatureService = new SignatureService();
     }
+
 
     /**
      * Returns an array with all required headers. Add this to your HTTP request
@@ -36,15 +51,22 @@ class Signature {
         return $headers;
     }
 
+    private function loadSignatureConfigFromFile(string $configPath): void
+    {
+        $json = file_get_contents($configPath);
+        $jsonDecodedObj = json_decode($json, false);
+        $this->loadSignatureConfig($jsonDecodedObj);
+    }
+
+
+
     /**
      * Load config value into SignatureConfig Object
      *
      * @param string $configPath config path
      */
-    private function loadSignatureConfig(string $configPath): void {
-        $json = file_get_contents($configPath);
-        $jsonDecodedObj = json_decode($json, false);
-
+    private function loadSignatureConfig($config)
+    {
         $mapper = new ModelMapper();
         $this->signatureConfig = new SignatureConfig();
         $mapper->map($jsonDecodedObj, $this->signatureConfig);
