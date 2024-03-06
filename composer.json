@@ -9,7 +9,7 @@
     "php": ">=7.2",
     "ext-json": "*",
     "runz0rd/mapper-php": "^2.2",
-    "phpseclib/phpseclib": "~3.0",
+    "phpseclib/phpseclib": "^3.0.10",
     "ext-curl": "*"
   },
   "require-dev": {
